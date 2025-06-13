@@ -100,17 +100,6 @@ if set(['year', 'powertrain', 'value']).issubset(df.columns):
     plt.tight_layout()
     plt.show()
     
-# Analisi della distribuzione delle vendite EV per regione e anno
-if set(['region', 'year', 'value']).issubset(df.columns):
-    vendite_region_anno = df[df['parameter'] == 'EV sales'].groupby(['region', 'year'])['value'].sum().reset_index()
-    plt.figure(figsize=(12, 8))
-    sns.barplot(x='year', y='value', hue='region', data=vendite_region_anno)
-    plt.title('Vendite EV per Regione e Anno')
-    plt.xlabel('Anno')
-    plt.ylabel('Numero di veicoli venduti')
-    plt.grid(axis='y')
-    plt.tight_layout()
-    plt.show()
 
 
 
