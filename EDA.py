@@ -1,6 +1,6 @@
 """
 Colonne del dataset:
-- region: Area geografica di raccolta dati (es. Australia)
+- nation: Area geografica di raccolta dati (es. Australia)
 - category: Natura del dato (es. Historical, Projection)
 - parameter: Tipo di metrica (es. EV sales, EV stock share)
 - mode: Modalità di trasporto (es. Cars)
@@ -10,48 +10,54 @@ Colonne del dataset:
 - value: Valore registrato
 """
 
-from dataset import load_dataset
+from dataset import load_dataset_full, load_dataset_nations
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Carica il DataFrame
-df = load_dataset()
+# Carica entrambi i DataFrame
+full_df = load_dataset_full()
+df = load_dataset_nations()
 
-# Statistiche descrittive generali
-print("\nStatistiche descrittive:")
+# Statistiche descrittive generali (solo nazioni)
+print("\nStatistiche descrittive (solo nazioni):")
 print(df.describe(include='all'))
 
-# Analisi variabili categoriche
+# Analisi variabili categoriche (solo nazioni)
 cat_cols = df.select_dtypes(include=['object']).columns
 for col in cat_cols:
     print(f"\nValori unici per {col}: {df[col].nunique()}")
     print(df[col].value_counts().head())
     
-# Analisi delle vendite EV per regione
-if set(['region', 'parameter', 'value']).issubset(df.columns):
-    vendite_regioni = df[df['parameter'] == 'EV sales'].groupby('region')['value'].sum().reset_index()
+# Analisi delle vendite EV per nazione
+if set(['nation', 'parameter', 'value']).issubset(df.columns):
+    vendite_nationi = df[(df['parameter'] == 'EV sales')]
+    somma_nationi = vendite_nationi.groupby('nation')['value'].sum().reset_index()
+    totale_nationi = somma_nationi['value'].sum()
     plt.figure(figsize=(12, 6))
-    sns.barplot(x='value', y='region', data=vendite_regioni.sort_values('value', ascending=False))
-    plt.title('Vendite EV per Regione')
+    sns.barplot(x='value', y='nation', data=somma_nationi.sort_values('value', ascending=False))
+    plt.title('Vendite EV per nazione')
     plt.xlabel('Numero di veicoli venduti')
-    plt.ylabel('Regione')
+    plt.ylabel('Nazione')
     plt.grid(axis='x')
     plt.tight_layout()
     plt.show()
 
-# Analisi temporale delle vendite EV: Quanti veicoli elettrici sono stati venduti ogni anno a livello globale?
-if set(['parameter', 'year', 'value']).issubset(df.columns):
-    vendite = df[df['parameter'] == 'EV sales']
-    vendite_anno = vendite.groupby('year')['value'].sum().reset_index()
-    plt.figure()
-    plt.plot(vendite_anno['year'], vendite_anno['value'], marker='o')
-    plt.title('EV Sales Globali per Anno')
-    plt.xlabel('Anno')
-    plt.ylabel('Numero di veicoli venduti')
-    plt.grid(True)
+# Analisi delle vendite EV per nazione (solo unità 'Vehicles')
+if set(['nation', 'parameter', 'value', 'unit']).issubset(df.columns):
+    vendite_nationi = df[(df['parameter'] == 'EV sales') & (df['unit'] == 'Vehicles')]
+    somma_nationi = vendite_nationi.groupby('nation')['value'].sum().reset_index()
+    somma_nationi = somma_nationi.sort_values('value', ascending=False)
+    plt.figure(figsize=(12, 6))
+    sns.barplot(x='value', y='nation', data=somma_nationi)
+    plt.title('Vendite EV per nazione (solo unità Vehicles, somma 2010-2024)')
+    plt.xlabel('Numero di veicoli venduti (2010-2024)')
+    plt.ylabel('Nazione')
+    plt.grid(axis='x')
     plt.tight_layout()
     plt.show()
-    
+    # Stampa le prime nazioni per controllo
+    print(somma_nationi.head(10))
+
 # Analisi della quota di mercato degli EV per tipo di veicolo
 if set(['powertrain', 'year', 'value']).issubset(df.columns):
     quota_mercato = df[df['parameter'] == 'EV stock share'].groupby(['powertrain', 'year'])['value'].mean().reset_index()
@@ -64,26 +70,28 @@ if set(['powertrain', 'year', 'value']).issubset(df.columns):
     plt.tight_layout()
     plt.show()
 
-# Analisi della distribuzione delle vendite EV per tipo di veicolo
-if set(['powertrain', 'value']).issubset(df.columns):
-    vendite_tipo = df[df['parameter'] == 'EV sales'].groupby('powertrain')['value'].sum().reset_index()
+# Analisi della distribuzione delle vendite EV per tipo di veicolo (escludendo 'EV' generico)
+if set(['powertrain', 'value', 'parameter']).issubset(df.columns):
+    tipi_specifici = ['BEV', 'PHEV', 'FCEV']
+    vendite_tipo = df[(df['parameter'] == 'EV sales') & (df['powertrain'].isin(tipi_specifici))]
+    vendite_tipo = vendite_tipo.groupby('powertrain')['value'].sum().reset_index()
     plt.figure(figsize=(8, 6))
     sns.barplot(x='powertrain', y='value', data=vendite_tipo)
-    plt.title('Vendite EV per Tipo di Veicolo')
+    plt.title('Vendite EV per Tipo di Veicolo (solo tipi specifici)')
     plt.xlabel('Tipo di Veicolo')
     plt.ylabel('Numero di veicoli venduti')
     plt.grid(axis='y')
     plt.tight_layout()
     plt.show()
     
-# Analisi della distribuzione delle vendite EV per regione e tipo di veicolo
-if set(['region', 'powertrain', 'value']).issubset(df.columns):
-    vendite_region_tipo = df[df['parameter'] == 'EV sales'].groupby(['region', 'powertrain'])['value'].sum().reset_index()
+# Analisi della distribuzione delle vendite EV per natione e tipo di veicolo
+if set(['nation', 'powertrain', 'value']).issubset(df.columns):
+    vendite_nation_tipo = df[df['parameter'] == 'EV sales'].groupby(['nation', 'powertrain'])['value'].sum().reset_index()
     plt.figure(figsize=(12, 8))
-    sns.barplot(x='value', y='region', hue='powertrain', data=vendite_region_tipo)
-    plt.title('Vendite EV per Regione e Tipo di Veicolo')
+    sns.barplot(x='value', y='nation', hue='powertrain', data=vendite_nation_tipo)
+    plt.title('Vendite EV per natione e Tipo di Veicolo')
     plt.xlabel('Numero di veicoli venduti')
-    plt.ylabel('Regione')
+    plt.ylabel('natione')
     plt.grid(axis='x')
     plt.tight_layout()
     plt.show()
@@ -99,7 +107,20 @@ if set(['year', 'powertrain', 'value']).issubset(df.columns):
     plt.grid(True)
     plt.tight_layout()
     plt.show()
-    
+
+# Analisi temporale globale delle vendite EV (World)
+if set(['region', 'parameter', 'value', 'year']).issubset(full_df.columns):
+    vendite_world = full_df[(full_df['parameter'] == 'EV sales') & (full_df['region'] == 'World')]
+    if not vendite_world.empty:
+        vendite_anno = vendite_world.groupby('year')['value'].sum().reset_index()
+        plt.figure(figsize=(10, 5))
+        plt.plot(vendite_anno['year'], vendite_anno['value'], marker='o')
+        plt.title('Vendite EV Globali per Anno (World)')
+        plt.xlabel('Anno')
+        plt.ylabel('Numero di veicoli venduti')
+        plt.grid(True)
+        plt.tight_layout()
+        plt.show()
 
 
 
