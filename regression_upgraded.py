@@ -9,6 +9,7 @@ from sklearn.metrics import (mean_absolute_error, r2_score, root_mean_squared_er
                              mean_absolute_percentage_error, median_absolute_error, max_error)
 from xgboost import XGBRegressor
 from scipy.stats.mstats import winsorize
+import joblib
 from dataset import load_dataset_nations
 
 # === Load and feature engineering ===
@@ -114,3 +115,11 @@ pd.Series(importances, index=features).sort_values(ascending=False).head(10).plo
 plt.grid(True)
 plt.tight_layout()
 plt.show()
+
+
+# Salvataggio dei modelli e dei trasformatori
+joblib.dump(model, "xgb_model.pkl")
+joblib.dump(encoder, "encoder.pkl")
+joblib.dump(scaler, "scaler.pkl")
+
+
