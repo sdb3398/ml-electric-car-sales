@@ -7,6 +7,9 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import TransformedTargetRegressor
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, root_mean_squared_error
 from xgboost import XGBRegressor
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from dataset import load_dataset_nations
 
 # === STEP 1: Carica e aggiungi feature ===
@@ -74,7 +77,8 @@ plt.title("True vs Predicted EV Sales")
 plt.plot([0, y_test.max()], [0, y_test.max()], '--r')
 plt.grid(True)
 plt.tight_layout()
-plt.show()
+plt.savefig("plots/true_vs_predicted_sales_First.png")
+plt.close()
 
 # Feature importance
 importances = model.regressor_.feature_importances_
@@ -84,4 +88,5 @@ plt.figure()
 pd.Series(importances, index=features).sort_values(ascending=False).head(10).plot(kind='barh', title='Top Feature Importance')
 plt.grid(True)
 plt.tight_layout()
-plt.show()
+plt.savefig("plots/feature_importance_first.png")
+plt.close()

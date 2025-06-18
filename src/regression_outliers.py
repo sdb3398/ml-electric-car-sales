@@ -8,6 +8,9 @@ from sklearn.compose import TransformedTargetRegressor
 from sklearn.metrics import mean_absolute_error, r2_score, root_mean_squared_error
 from xgboost import XGBRegressor
 from scipy.stats.mstats import winsorize
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from dataset import load_dataset_nations
 
 # === Caricamento dati ===
@@ -87,7 +90,8 @@ plt.title("True vs Predicted EV Sales (Outliers Winsorized)")
 plt.plot([0, y_true_final.max()], [0, y_true_final.max()], '--r')
 plt.grid(True)
 plt.tight_layout()
-plt.show()
+plt.savefig("plots/true_vs_predicted_sales_Outliers_Winsorized.png")
+plt.close()
 
 # === Feature importance ===
 importances = model.regressor_.feature_importances_
@@ -97,4 +101,5 @@ plt.figure()
 pd.Series(importances, index=features).sort_values(ascending=False).head(10).plot(kind='barh', title='Top Feature Importance')
 plt.grid(True)
 plt.tight_layout()
-plt.show()
+plt.savefig("plots/feature_importance_outliers.png")
+plt.close()

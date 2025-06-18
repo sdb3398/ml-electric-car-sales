@@ -8,20 +8,15 @@ Questo progetto mira a prevedere le vendite di veicoli elettrici (EV) per nazion
 
 ```
 ml-electric-car-sales/
-├── data/                  # Dataset e output delle predizioni
-│   └── EV_sales_predictions_2024.csv
-│
-├── models/                # Modelli e scaler salvati
-│   ├── encoder.pkl
-│   ├── scaler.pkl
-│   └── xgb_model.pkl
+├── models/                # Modelli salvati (.gitkeep presente)
 │
 ├── notebooks/             # Notebook e script EDA
 │   ├── EDA.py
-│   └── EDA_CHAT.py
+│   └── EDA_2.py
 │
 ├── src/                   # Codice sorgente
-│   ├── dataset.py
+│   ├── preprocessing.py
+│   ├── model_training.py
 │   ├── regression_models.py
 │   ├── regression_outliers.py
 │   ├── regression_advanced.py
@@ -32,6 +27,7 @@ ml-electric-car-sales/
 │
 ├── plots/                 # Grafici
 │
+├── dataset.py             # load e manipolazione dataset
 ├── main.py                # Script principale di orchestrazione
 ├── requirements.txt       # Dipendenze
 └── .gitignore

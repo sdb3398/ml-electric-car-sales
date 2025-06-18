@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # === Carica il file locale
-csv_path = "EV_sales_predictions_2024.csv"
+csv_path = "data/EV_sales_predictions_2024.csv"
 df = pd.read_csv(csv_path)
 
 # === Tabella ordinata per vendite EV previste
@@ -19,4 +19,6 @@ plt.ylabel("Numero di Veicoli")
 plt.xticks(rotation=45)
 plt.grid(True)
 plt.tight_layout()
-plt.show()
+plt.savefig("plots/Top_15_Countries_by_total_EV_Sales.png")
+plt.close()
+
