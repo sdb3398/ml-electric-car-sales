@@ -14,7 +14,7 @@ top15 = df.groupby("nation")["predicted_sales"].sum().sort_values(ascending=Fals
 
 plt.figure(figsize=(12, 6))
 top15.plot(kind="bar")
-plt.title("🔝 Top 15 Nazioni per Vendite EV Previste nel 2024")
+plt.title("Top 15 Nazioni per Vendite EV Previste nel 2024")
 plt.ylabel("Numero di Veicoli")
 plt.xticks(rotation=45)
 plt.grid(True)

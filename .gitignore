@@ -1,2 +1,12 @@
+# Virtualenv
 venv/
 __pycache__/
+*.pyc
+
+# Modelli e dati
+*.pkl
+*.csv
+
+# IDE
+.vscode/
+.idea/
