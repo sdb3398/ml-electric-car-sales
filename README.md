@@ -52,7 +52,7 @@ ml-electric-car-sales/
 
 ## 🔍 Dataset
 
-Dati provenienti da [Kaggle - EV Sales Dataset](https://www.kaggle.com/datasets/jainaru/electric-car-sales-2010-2024), contenenti vendite dal 2010 al 2023 per nazione e tipo di powertrain.
+Dati provenienti da [Kaggle - EV Sales Dataset](https://www.kaggle.com/datasets/jainaru/electric-car-sales-2010-2024), contenenti vendite dal 2010 al 2024 per nazione e tipo di powertrain.
 
 ---
 
